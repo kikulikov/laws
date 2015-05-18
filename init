@@ -3,4 +3,4 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-ln -s -f -v $(pwd)/saws.sh /usr/local/bin/saws
+ln -s -f -v $(pwd)/saws.py /usr/local/bin/saws
