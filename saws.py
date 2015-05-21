@@ -38,28 +38,29 @@ def get_instances(profile):
     conn = boto.ec2.EC2Connection(profile_name=profile, region=reg)
     # conn = boto.ec2.EC2Connection(profile_name='heal')
     # conn = boto.ec2.connect_to_region('eu-west-1')
-    # print conn
     return conn.get_all_instances()
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Simple AWS EC2 grep')
+    parser = argparse.ArgumentParser(description='Simple AWS EC2 table view')
     parser.add_argument('-p', '--profile', nargs='?', help='aws profile')
-    parser.add_argument('search', nargs='+', help='search string')
+    parser.add_argument('search', nargs='*', help='search string')
     return parser.parse_args()
 
 
 def filter_instances(instances, search):
-    print search
     data = []
     for res in instances:
         for inst in res.instances:
             count = len(data)
             for key, val in inst.tags.iteritems():  # loop tags
-                for s in search:  # chech search strings
-                    if s in val:
-                        data.append(build_row(inst))
-                        break  # break if found
+                if search:
+                    for s in search:  # chech search strings
+                        if s in val:
+                            data.append(build_row(inst))
+                            break  # break if found
+                else:
+                    data.append(build_row(inst))
                 if count < len(data):
                     break  # break if found
     return data
