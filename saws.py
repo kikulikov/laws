@@ -5,7 +5,7 @@ import boto.ec2
 from tabulate import tabulate
 
 
-class bcolours:
+class TerminalColours:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
@@ -21,7 +21,7 @@ def xstr(s):
 
 
 def paint(data, colour):
-    return [colour + xstr(s) + bcolours.ENDC for s in data]
+    return [colour + xstr(s) + TerminalColours.ENDC for s in data]
 
 
 def build_row(inst):
@@ -50,6 +50,7 @@ def parse_args():
 
 
 def filter_instances(instances, search):
+    print search
     data = []
     for res in instances:
         for inst in res.instances:
@@ -66,11 +67,11 @@ def filter_instances(instances, search):
 
 def paint_data(row):
     if row[5] == 'stopped':
-        return paint(row, bcolours.FAIL)
+        return paint(row, TerminalColours.FAIL)
     elif row[5] == 'running' and row[4] is None:
-        return paint(row, bcolours.OKBLUE)
+        return paint(row, TerminalColours.OKBLUE)
     elif row[5] == 'running' and row[4] is not None:
-        return paint(row, bcolours.OKGREEN)
+        return paint(row, TerminalColours.OKGREEN)
     return row
 
 
@@ -83,7 +84,7 @@ def prepare_data():
 
 def main():
     data = prepare_data()
-    heads = paint(build_headers(), bcolours.HEADER)
+    heads = paint(build_headers(), TerminalColours.HEADER)
     print tabulate(data, headers=heads, tablefmt="orgtbl")
 
 
