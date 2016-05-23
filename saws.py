@@ -26,11 +26,11 @@ def paint(data, colour):
 
 def build_row(inst):
     return [inst.id, inst.tags['Name'], inst.ip_address,
-            inst.public_dns_name, inst.vpc_id, inst.state]
+            inst.private_ip_address, inst.vpc_id, inst.state]
 
 
 def build_headers():
-    return ["ID", "NAME", "PUBLIC IP", "PUBLIC DNS", "VPC", "STATE"]
+    return ["ID", "NAME", "PUBLIC IP", "PRIVATE IP", "VPC", "STATE"]
 
 
 def get_instances(profile):
