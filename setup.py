@@ -9,7 +9,6 @@ setup(
     description = 'Filters AWS instances',
     author = 'Kirill Kulikov',
     author_email = 'kirill.kulikov@gmail.com',
-    license='MIT',
     url='https://github.com/cyrillk/list-aws',
     download_url = 'https://github.com/cyrillk/list-aws/tarball/0.1',
     keywords = ['aws', 'ec2'],
