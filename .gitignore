@@ -1,6 +1,3 @@
-.Python
-bin/
-include/
-lib/
+build/
 dist/
-publish_aws_lambda.egg-info/
+*.egg-info/

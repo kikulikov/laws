@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import argparse
 import boto.ec2
 from tabulate import tabulate
