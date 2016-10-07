@@ -1,6 +1,14 @@
 # laws
 
-Lists AWS EC2 instances in a short table format `laws`. Allows to filter nodes by tag or name `laws cassandra`.
+`ls` for AWS EC2 instances to list them in a short table format. Allows to filter nodes by tag or name. Shorthand alternative to `aws ec2 describe-instances --filters "Name=tag:environment,Values=qa" | jq ".Reservations[].Instances[].PrivateIpAddress"`
+
+## Examples
+
+`laws`
+
+`laws qa`
+
+`laws -p myprofile cassandra`
 
 ## Installation
 
