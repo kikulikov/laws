@@ -90,7 +90,7 @@ def retrieve_data(args):
 
 
 def printer(colouredHeaders, colouredData):
-    print tabulate(colouredData, headers=colouredHeaders, tablefmt="simple")
+    print(tabulate(colouredData, headers=colouredHeaders, tablefmt="simple"))
 
 
 def main():
