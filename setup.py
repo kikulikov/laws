@@ -5,7 +5,7 @@ from setuptools import setup
 setup(
     name='laws',
     packages=['laws'],
-    version='0.6.3',
+    version='0.6.4',
     description='-ls- for AWS EC2 instances',
     long_description='https://github.com/cyrillk/laws/blob/master/README.md',
     author='Kirill Kulikov',
