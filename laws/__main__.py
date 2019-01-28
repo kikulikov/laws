@@ -41,15 +41,16 @@ def build_row(inst):
     inst.public_ip_address, inst.vpc_id, inst.instance_type, inst.state['Name']]
 
 
-def get_instances(profile):
+def get_instances(profile, region):
     session = boto3.Session(profile_name=profile)
-    ec2_resource = session.resource('ec2')
+    ec2_resource = session.resource('ec2', region_name=region)
     return ec2_resource.instances.all()
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Simple AWS EC2 table view')
     parser.add_argument('-p', '--profile', nargs='?', help='aws profile')
+    parser.add_argument('-r', '--region', nargs='?', help='Specify Custom Region')
     parser.add_argument('search', nargs='*', help='search string')
     return parser.parse_args()
 
@@ -85,7 +86,7 @@ def paint_data(data):
 
 
 def retrieve_data(args):
-    data = filter_instances(get_instances(args.profile), args.search)
+    data = filter_instances(get_instances(args.profile, args.region), args.search)
     return sorted(data, key=lambda x: x[1])
 
 
