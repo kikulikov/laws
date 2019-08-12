@@ -2,8 +2,9 @@
 
 import argparse
 import boto3
+import sys
 from tabulate import tabulate
-
+from subprocess import Popen, PIPE, call, STDOUT
 
 class TerminalColours:
     HEADER = '\033[95m'
@@ -15,7 +16,6 @@ class TerminalColours:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
 def xstr(s):
     return '' if s is None else str(s)
 
@@ -23,8 +23,9 @@ def xstr(s):
 def paint(data, colour):
     return [colour + xstr(s) + TerminalColours.ENDC for s in data]
 
-
-rawHeaders = ["ID", "NAME", "PRIVATE IP", "PUBLIC IP", "VPC", "TYPE", "STATE"]
+hostNames = ['ubuntu', 'ec2-user']
+rawHeaders = ["NO", "ID", "NAME", "PRIVATE IP", "PUBLIC IP", "VPC", "TYPE", "STATE"]
+errors = ["Permission denied", "Connection timed out", "Connection refused"]
 colouredHeaders = paint(rawHeaders, TerminalColours.HEADER)
 
 
@@ -57,7 +58,6 @@ def parse_args():
 
 def filter_instances(instances, searches):
     data = []
-
     for inst in instances:
         if inst.tags and searches:
             founds = []
@@ -74,9 +74,9 @@ def filter_instances(instances, searches):
 
 
 def paint_data_row(row):
-    if row[6] == 'stopped':
+    if row[7] == 'stopped':
         return paint(row, TerminalColours.FAIL)
-    elif row[6] == 'running':
+    elif row[7] == 'running':
         return paint(row, TerminalColours.OKGREEN)
     return row
 
@@ -87,18 +87,46 @@ def paint_data(data):
 
 def retrieve_data(args):
     data = filter_instances(get_instances(args.profile, args.region), args.search)
-    return sorted(data, key=lambda x: x[1])
-
+    sortedData = sorted(data, key=lambda x: x[1])
+    [x.insert(0,i+1) for i, x in enumerate(sortedData)]
+    return sortedData
 
 def printer(colouredHeaders, colouredData):
     print(tabulate(colouredData, headers=colouredHeaders, tablefmt="simple"))
 
+def sshWrapper(ip):
+    for hostname in hostNames:
+        print "Trying hostname as "+str(hostname)
+        command = ['ssh -o ConnectTimeout=5 -t -t '+hostname+'@'+str(ip)]
+        x = Popen(command, stderr=PIPE, shell=True)
+        (output, err) = x.communicate()
+        p_status = x.wait()
+        if not p_status:
+            return False
+    return True
+
+def sshInstance(rawData):
+    number = int(raw_input("Enter SSH instance to connect: "))
+    privateIP = rawData[number-1][3]
+    publicIP = rawData[number-1][4]
+    print ("ec2-ssh connecting")
+    err = sshWrapper(privateIP)
+    if not err:
+        print "Exiting"
+        return
+    print "Trying with Public IP"
+    err = sshWrapper(publicIP)
+    if err:
+        print "Unable to Connect"
+        return False
+    return True
 
 def main():
     args = parse_args()
     rawData = retrieve_data(args)
     colouredData = paint_data(rawData)
     printer(colouredHeaders, colouredData)
+    sshInstance(rawData)
 
 
 if __name__ == "__main__":
