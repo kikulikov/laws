@@ -106,12 +106,18 @@ def sshWrapper(ip):
     return True
 
 def sshInstance(rawData):
-    number = int(raw_input("Enter SSH instance to connect: "))
+    if not rawData:
+        return
+    try:
+        number = int(raw_input("Enter SSH instance to connect: "))
+    except (KeyboardInterrupt, SystemExit, EOFError):
+        print "\nExiting"
+        sys.exit(0)
     privateIP = rawData[number-1][3]
     publicIP = rawData[number-1][4]
     print ("ec2-ssh connecting")
     err = sshWrapper(privateIP)
-    if not err:
+    if not err or not publicIP:
         print "Exiting"
         return
     print "Trying with Public IP"
