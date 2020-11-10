@@ -12,6 +12,10 @@ Allows to filter nodes by tag and name. Shorthand alternative to `aws ec2 descri
 
 `laws -p myprofile cassandra`
 
+`laws -r us-west-2`
+
+`laws -p myprofile -r us-west-2`
+
 ## Installation
 
 ```
